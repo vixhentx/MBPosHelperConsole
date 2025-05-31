@@ -43,7 +43,7 @@ while (true)
         Console.WriteLine("static{");
         foreach (var pos in list)
         {
-            Console.WriteLine($"\toffsetSet{index}.add(new BlockPos(,{-pos.X},{pos.Y},{-pos.Z}));");
+            Console.WriteLine($"\toffsetSet{index}.add(new BlockPos({pos.X},{pos.Y},{pos.Z}));");
         }
         Console.WriteLine("}");
         index++;
