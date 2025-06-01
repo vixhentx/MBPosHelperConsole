@@ -207,7 +207,23 @@ namespace MBPosHelperConsole.CommandLine
             {
                 var posList = env.Pattern[symbol];
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine($"//{symbol},Direction.{}");
+
+                foreach(var dir in Model.Directions.All)
+                {
+                    Console.WriteLine($"//{symbol} : {dir.Name}");
+                    Console.WriteLine($"public static Set<BlockPos> blockOffset{dir.Name}{env.FaceIndex} = new HashSet<BlockPos>();");
+                    Console.WriteLine("static{");
+                    foreach (var pos in posList)
+                    {
+                        var tPos = pos + dir.Vector;
+                        if(!env.Pattern.IsIn(tPos) || env.Pattern[tPos] != symbol)
+                        {
+                            Console.WriteLine($"\tblockOffset{dir.Name}{env.FaceIndex}.add(new BlockPos(,{pos.X},{pos.Y},{pos.Z}));");
+                        }
+                    }
+                    Console.WriteLine("}");
+                }
+
                 env.FaceIndex++;
             }
             catch (KeyNotFoundException)

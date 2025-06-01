@@ -28,11 +28,23 @@ namespace MBPosHelperConsole.Model
                 list.Add(new(x, y, z));
             }
         }
+        public char this[BlockPos pos]
+        {
+            get => symbol[pos.X,pos.Y,pos.Z];
+            set => symbol[pos.X, pos.Y, pos.Z] = value;
+        }
         public List<BlockPos> this[char symbol] => map[symbol];
         public int SizeX { get; set; }
         public int SizeY { get; set; }
         public int SizeZ { get; set; }
 
+        public bool IsIn(BlockPos pos)
+        {
+            return pos.X >= 0 && pos.X <= SizeX
+                && pos.Y >= 0 && pos.Y <= SizeY
+                && pos.Z >= 0 && pos.Z <= SizeZ
+                ;
+        }
         public GTPattern(string pattern)
         {
             // 匹配 aisle(...)

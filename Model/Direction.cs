@@ -26,5 +26,7 @@ namespace MBPosHelperConsole.Model
         public static Direction Left { get; } = new(new(-1, 0, 0), "WEST");
         //aka EAST
         public static Direction Right { get; } = new(new(1, 0, 0), "EAST");
+
+        public static List<Direction> All { get; } = [Down,Up,Back,Front,Left,Right];
     }
 }
