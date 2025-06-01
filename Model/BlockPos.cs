@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MBPosHelperConsole
+namespace MBPosHelperConsole.Model
 {
     public class BlockPos
     {
@@ -26,7 +26,7 @@ namespace MBPosHelperConsole
             Z -= right.Z;
             return this;
         }
-        public static BlockPos operator+ (BlockPos left, BlockPos right) => new BlockPos(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
-        public static BlockPos operator- (BlockPos left, BlockPos right) => new BlockPos(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
+        public static BlockPos operator +(BlockPos left, BlockPos right) => new BlockPos(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+        public static BlockPos operator -(BlockPos left, BlockPos right) => new BlockPos(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
     }
 }

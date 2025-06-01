@@ -1,4 +1,6 @@
-﻿namespace MBPosHelperConsole
+﻿using MBPosHelperConsole.CommandLine;
+
+namespace MBPosHelperConsole
 {
     public class MBPosHelper
     {

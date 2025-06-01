@@ -6,7 +6,7 @@ using System.Text;
 
 #pragma warning disable CA1822
 #pragma warning disable IDE0051
-namespace MBPosHelperConsole
+namespace MBPosHelperConsole.CommandLine
 {
     public class CommandHelper
     {
@@ -15,11 +15,11 @@ namespace MBPosHelperConsole
         CmdEnvironment env = new();
         public CommandHelper()
         {
-            var methods = this.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance);
+            var methods = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance);
             foreach (var m in methods)
             {
                 var att = m.GetCustomAttribute<CmdInfo>();
-                if(att == null || m.GetParameters().FirstOrDefault()?.ParameterType != typeof(IEnumerable<string>)) continue;
+                if (att == null || m.GetParameters().FirstOrDefault()?.ParameterType != typeof(IEnumerable<string>)) continue;
                 handlers.Add(
                     key: att.Name,
                     value: (Action<IEnumerable<string>>)Delegate.CreateDelegate(
@@ -27,7 +27,7 @@ namespace MBPosHelperConsole
                         this,
                         m
                     ));
-                infos.Add(att.Name, att );
+                infos.Add(att.Name, att);
             }
         }
         public void Execute(string command, IEnumerable<string> args)
@@ -45,7 +45,7 @@ namespace MBPosHelperConsole
         public void Help(string? command = null)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            if(command != null)
+            if (command != null)
             {
                 try
                 {
@@ -73,17 +73,17 @@ namespace MBPosHelperConsole
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Invalid Command: {command}");
         }
-        [CmdInfo(name:"help",description:"Show help.",
-            usage:"Just type \"help\", \r\n" +
+        [CmdInfo(name: "help", description: "Show help.",
+            usage: "Just type \"help\", \r\n" +
                 "Or help [command1] [command2] ..."
             )]
         private void Help(IEnumerable<string> args)
         {
             if (args.Count() == 1) Help();
             var list = args.ToArray();
-            for(int i = 1; i < list.Count(); i++) Help(list[i]);
+            for (int i = 1; i < list.Count(); i++) Help(list[i]);
         }
-        [CmdInfo(name:"pattern",description:"Set the GTPattern.",usage:"Just type \"pattern\", and then it will instruct u.")]
+        [CmdInfo(name: "pattern", description: "Set the GTPattern.", usage: "Just type \"pattern\", and then it will instruct u.")]
         private void Pattern(IEnumerable<string> args)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -92,7 +92,7 @@ namespace MBPosHelperConsole
             Console.ForegroundColor = ConsoleColor.White;
             string rawPattern = "";
             string? tmp;
-            while ((tmp = Console.ReadLine()) != null) 
+            while ((tmp = Console.ReadLine()) != null)
             {
                 rawPattern += tmp;
             }
@@ -108,13 +108,13 @@ namespace MBPosHelperConsole
                 Console.WriteLine("Invalid GTPattern.");
             }
         }
-        [CmdInfo(name:"symbol",description:"Set the symbol to query.",
+        [CmdInfo(name: "symbol", description: "Set the symbol to query.",
             usage: "Just type \"symbol\", and then it will instruct u. \r\n" +
                     "Or symbol [one single char] ."
             )]
         private void Symbol(IEnumerable<string> args)
         {
-            if(args.Count() != 2 || args.ToArray()[1].Count() != 1)
+            if (args.Count() != 2 || args.ToArray()[1].Count() != 1)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("Which symbol do you want to query? Input EOF to quit.");
@@ -130,12 +130,12 @@ namespace MBPosHelperConsole
                 }
                 if (tmp == null) return;
                 env.Symbol = tmp[0];
-            } 
+            }
             else env.Symbol = args.ToArray()[1][0];
-            Console.ForegroundColor= ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Succeed to set symbol to {env.Symbol}");
         }
-        [CmdInfo(name:"getblock",description:"Get the Set<BlockPos> of the bounding symbol for RenderBlocks")]
+        [CmdInfo(name: "getblock", description: "Get the Set<BlockPos> of the bounding symbol for RenderBlocks")]
         private void GetBlock(IEnumerable<string> args)
         {
             if (env.Pattern == null)
@@ -145,7 +145,7 @@ namespace MBPosHelperConsole
                 return;
             }
             char symbol;
-            if (env.Symbol != null) 
+            if (env.Symbol != null)
             {
                 symbol = (char)env.Symbol;
             }
@@ -179,6 +179,43 @@ namespace MBPosHelperConsole
                 Console.WriteLine("Symbol NOT FOUND");
             }
         }
+        [CmdInfo(name: "getface", description: "Get the Set<BlockPos> of the bounding symbol for RenderFaces")]
+        private void GetFace(IEnumerable<string> args)
+        {
+            if (env.Pattern == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("GTPattern not set!");
+                return;
+            }
+            char symbol;
+            if (env.Symbol != null)
+            {
+                symbol = (char)env.Symbol;
+            }
+            else if (args.Count() == 2 && args.ToArray()[1].Length == 1)
+            {
+                symbol = args.ToArray()[1][0];
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Symbol not set!");
+                return;
+            }
+            try
+            {
+                var posList = env.Pattern[symbol];
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"//{symbol},Direction.{}");
+                env.FaceIndex++;
+            }
+            catch (KeyNotFoundException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Symbol NOT FOUND");
+            }
+        }
     }
 
     internal class CmdInfo(string name, string? description = null, string? usage = null) : Attribute
@@ -192,7 +229,7 @@ namespace MBPosHelperConsole
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine($"Command: {Name}");
-                if(Description != null) sb.AppendLine($"Description: {Description}");
+                if (Description != null) sb.AppendLine($"Description: {Description}");
                 if (Usage != null) sb.AppendLine($"Usage: {Usage}");
                 return sb.ToString();
             }

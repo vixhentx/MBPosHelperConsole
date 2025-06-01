@@ -6,13 +6,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace MBPosHelperConsole
+namespace MBPosHelperConsole.Model
 {
     public class GTPattern
     {
         //[x][y][z]:
         // x-为机器左边，y-为机器下面，z-为机器后面
-        char[,,] symbol = new char[256,256,256];
+        char[,,] symbol = new char[256, 256, 256];
         Dictionary<char, List<BlockPos>> map = [];
         public char this[int x, int y, int z]
         {
@@ -29,9 +29,9 @@ namespace MBPosHelperConsole
             }
         }
         public List<BlockPos> this[char symbol] => map[symbol];
-        public int SizeX {get;set;}
-        public int SizeY {get;set;}
-        public int SizeZ {get;set;}
+        public int SizeX { get; set; }
+        public int SizeY { get; set; }
+        public int SizeZ { get; set; }
 
         public GTPattern(string pattern)
         {
@@ -48,7 +48,7 @@ namespace MBPosHelperConsole
                     )*                  
                     )                   
                     \))
-                ",               
+                ",
                 options:
                 RegexOptions.IgnorePatternWhitespace
             );
@@ -86,13 +86,13 @@ namespace MBPosHelperConsole
                         {
                             // 处理转义
                             string cleaned = argMatch.Groups[1].Value
-                                .Replace("\\\"", "\"")   
+                                .Replace("\\\"", "\"")
                                 .Replace("\\\\", "\\");
 
                             int x = 0;
-                            foreach (char c in cleaned) 
+                            foreach (char c in cleaned)
                             {
-                                this[x,y,z] = c;
+                                this[x, y, z] = c;
                                 x++;
                             }
                             SizeX = x;
@@ -107,8 +107,8 @@ namespace MBPosHelperConsole
             }
 
             BlockPos controllerPos = this['@'][0];
-            foreach(var vList in map.Values)
-                foreach(var pos in vList)
+            foreach (var vList in map.Values)
+                foreach (var pos in vList)
                     pos.Subtract(controllerPos);
         }
     }
