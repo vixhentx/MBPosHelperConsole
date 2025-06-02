@@ -168,7 +168,8 @@ namespace MBPosHelperConsole.CommandLine
                 Console.WriteLine("static{");
                 foreach (var pos in posList)
                 {
-                    Console.WriteLine($"\tblockOffset{env.BlockIndex}.add(new BlockPos({pos.X},{pos.Y},{pos.Z}));");
+                    var tpos = pos - env.Pattern.Controller;
+                    Console.WriteLine($"\tblockOffset{env.BlockIndex}.add(new BlockPos({tpos.X},{tpos.Y},{tpos.Z}));");
                 }
                 Console.WriteLine("}");
                 env.BlockIndex++;
@@ -218,7 +219,8 @@ namespace MBPosHelperConsole.CommandLine
                         var tPos = pos + dir.Vector;
                         if(!env.Pattern.IsIn(tPos) || env.Pattern[tPos] != symbol)
                         {
-                            Console.WriteLine($"\tblockOffset{dir.Name}{env.FaceIndex}.add(new BlockPos({pos.X},{pos.Y},{pos.Z}));");
+                            var p = pos - env.Pattern.Controller;
+                            Console.WriteLine($"\tblockOffset{dir.Name}{env.FaceIndex}.add(new BlockPos({p.X},{p.Y},{p.Z}));");
                         }
                     }
                     Console.WriteLine("}");

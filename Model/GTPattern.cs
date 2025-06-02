@@ -14,6 +14,7 @@ namespace MBPosHelperConsole.Model
         // x-为机器左边，y-为机器下面，z-为机器后面
         char[,,] symbol = new char[256, 256, 256];
         Dictionary<char, List<BlockPos>> map = [];
+        public BlockPos Controller { get; private set; }
         public char this[int x, int y, int z]
         {
             get => symbol[x, y, z];
@@ -26,6 +27,7 @@ namespace MBPosHelperConsole.Model
                     map.Add(value, list);
                 }
                 list.Add(new(x, y, z));
+                symbol[x, y, z] = value; ;
             }
         }
         public char this[BlockPos pos]
@@ -40,9 +42,9 @@ namespace MBPosHelperConsole.Model
 
         public bool IsIn(BlockPos pos)
         {
-            return pos.X >= 0 && pos.X <= SizeX
-                && pos.Y >= 0 && pos.Y <= SizeY
-                && pos.Z >= 0 && pos.Z <= SizeZ
+            return pos.X >= 0 && pos.X < SizeX
+                && pos.Y >= 0 && pos.Y < SizeY
+                && pos.Z >= 0 && pos.Z < SizeZ
                 ;
         }
         public GTPattern(string pattern)
@@ -118,10 +120,10 @@ namespace MBPosHelperConsole.Model
                 //else throw new InvalidCastException("Failed to match");
             }
 
-            BlockPos controllerPos = this['@'][0];
-            foreach (var vList in map.Values)
-                foreach (var pos in vList)
-                    pos.Subtract(controllerPos);
+            Controller = this['@'][0];
+            //foreach (var vList in map.Values)
+            //    foreach (var pos in vList)
+            //        pos.Subtract(Controller);
         }
     }
 }
